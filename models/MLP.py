@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 
+# We don't follow the PEP8 convention with the variables X_train and X_test as we wanted to use an uppercase
+# with the X to remember that it is a matrix.
 
 class MLP:
     DATA_TYPE = torch.float32
@@ -26,12 +28,17 @@ class MLP:
             activ = nn.PReLU()
         else:
             raise ValueError('Enter a valid activation function. \'relu\' or \'prelu\'.')
+        # Network structure:
+        # - input layer
+        # - 1 hidden layer of 96 neurones
+        # - 1 hidden layer of 96 neurones
+        # - output layer
         self.model = nn.Sequential(
-            nn.Linear(input_size, 96, bias=True, dtype=self.DATA_TYPE),  # couche d'entrée
+            nn.Linear(input_size, 96, bias=True, dtype=self.DATA_TYPE),
             activ,
-            nn.Linear(96, 96, bias=True, dtype=self.DATA_TYPE),  # couche cachée
+            nn.Linear(96, 96, bias=True, dtype=self.DATA_TYPE),
             activ,
-            nn.Linear(96, output_size, bias=True, dtype=self.DATA_TYPE),  # couche de sortie
+            nn.Linear(96, output_size, bias=True, dtype=self.DATA_TYPE),
         )
         self.model.to(device=self._device)
 
@@ -67,7 +74,7 @@ class MLP:
             accuracy = 0
             loss_epoch = 0
 
-            # Dans une epoch, nous parcourons toutes les données
+            # in one epoch we iterate on all the data
             for (x_sample, t_sample) in zip(X_train, t_train):
                 y = self.model(x_sample)
                 loss = self.loss_function(y, t_sample)
@@ -91,7 +98,7 @@ class MLP:
                 print("Epoch {}/{}, Loss: {:.5f}, Accuracy: {:.2f}%".format(epoch + 1, self.num_epochs, loss_train[-1],
                                                                             accuracy_train[-1] * 100))
 
-            # Convergence de l'algorithme ça ne sert à rien de continuer à faire des calculs
+            # End the training if the algorithm has converged sufficiently. It is the tolerance of the algorithm.
             if len(loss_train) >= 2 and abs(loss_train[-1] - loss_train[-2]) <= tol:
                 break
 
@@ -99,7 +106,7 @@ class MLP:
 
     def k_fold_cross_validation(self, X_train, t_train, optim='SGD'):
         lr_choices = [1e-4, 1e-3, 1e-2, 1e-1]
-        reg_choices = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9]
+        reg_choices = [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
         K = 5
         kf = KFold(n_splits=K, shuffle=True)
 
@@ -131,7 +138,8 @@ class MLP:
 
 def plot_training(loss_train, accuracy_train, loss_test, accuracy_test):
     """
-    Fonction basée sur la fonction d'affichage des courbes d'apprentissage du cours IFT712
+    Plot the training plot for the data_train and data_test. The function is based on the plot_curves function
+    used in the TP4 of IFT712.
     """
     xdata = np.arange(1, len(loss_train) + 1)
     plt.figure()
