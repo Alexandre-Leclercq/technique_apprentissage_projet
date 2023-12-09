@@ -22,23 +22,25 @@ class CNN:
         self.model = None
         self._optimizer = None
 
-    def set_model(self, num_channels: int, img_size: int, output_size: int):
+    def set_model(self, num_channels: int, output_size: int):
         self.model = nn.Sequential(
-            nn.Conv2d(in_channels=num_channels, out_channels=img_size, kernel_size=(5,5), padding=1, dtype=self.DATA_TYPE),
+            nn.Conv2d(1, 32, kernel_size=(3, 3), stride=1, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Dropout(0.3),
+            nn.MaxPool2d(kernel_size=(2, 2), stride=2),
 
-            nn.Conv2d(in_channels=img_size, out_channels=img_size, kernel_size=(5, 5), padding=1, dtype=self.DATA_TYPE),
+            nn.Conv2d(32, 32, kernel_size=(3, 3), stride=1, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=(2,2)),
+            nn.MaxPool2d(kernel_size=(2, 2)),
 
             nn.Flatten(),
 
-            nn.Linear(6272, 512, dtype=self.DATA_TYPE),
+            nn.Linear(2048, 512),
             nn.ReLU(),
             nn.Dropout(0.5),
 
-            nn.Linear(512, output_size, bias=True, dtype=self.DATA_TYPE),
+            nn.Linear(512, output_size)
         )
         self.model.to(device=self._device)
 
@@ -113,14 +115,14 @@ def plot_training(loss_train, accuracy_train, loss_test, accuracy_test):
     plt.subplot(2, 1, 1)
     plt.ylabel('Loss')
     plt.plot(xdata, loss_train, label='training')
-    plt.plot(xdata, loss_test, label='validation')
+    plt.plot(xdata, loss_test, label='test')
     plt.xticks(xdata)
     plt.legend()
 
     plt.subplot(2, 1, 2)
     plt.ylabel('Accuracy')
     plt.plot(xdata, accuracy_train, label='training')
-    plt.plot(xdata, accuracy_test, label='validation')
+    plt.plot(xdata, accuracy_test, label='test')
     plt.xticks(xdata)
     plt.legend()
     plt.show(block=False)
