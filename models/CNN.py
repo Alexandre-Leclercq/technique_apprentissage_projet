@@ -22,22 +22,29 @@ class CNN:
         self.model = None
         self._optimizer = None
 
-    def set_model(self, num_channels: int, output_size: int):
+    def set_model(self, output_size: int, activation_function='relu'):
+        if activation_function == 'relu':
+            activ = nn.ReLU()
+        elif activation_function == 'prelu':
+            activ = nn.PReLU()
+        else:
+            raise ValueError('Enter a valid activation function. \'relu\' or \'prelu\'.')
+
         self.model = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=(3, 3), stride=1, padding=1),
             nn.BatchNorm2d(32),
-            nn.ReLU(),
+            activ,
             nn.MaxPool2d(kernel_size=(2, 2), stride=2),
 
-            nn.Conv2d(32, 32, kernel_size=(3, 3), stride=1, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
+            nn.Conv2d(32, 16, kernel_size=(3, 3), stride=1, padding=1),
+            nn.BatchNorm2d(16),
+            activ,
             nn.MaxPool2d(kernel_size=(2, 2)),
 
             nn.Flatten(),
 
-            nn.Linear(2048, 512),
-            nn.ReLU(),
+            nn.Linear(1024, 512),
+            activ,
             nn.Dropout(0.5),
 
             nn.Linear(512, output_size)
@@ -57,7 +64,7 @@ class CNN:
         elif optim == 'ADAM':
             self._optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=reg)
 
-    def training(self, train_loader, test_loader, verbose=True, tol=1e-4):
+    def training(self, train_loader, test_loader, verbose=True, tol=5e-4):
         if self._optimizer is None:
             raise ValueError('optimizer is not defined')
 
