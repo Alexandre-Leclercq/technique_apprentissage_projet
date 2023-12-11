@@ -10,7 +10,7 @@ from sklearn.model_selection import KFold
 class MLP:
     DATA_TYPE = torch.float32
 
-    def __init__(self, X_train, t_train, X_test, t_test, num_epochs):
+    def __init__(self, num_epochs):
 
         self._device = torch.device('cpu')
         if torch.backends.cuda.is_built():
@@ -19,7 +19,7 @@ class MLP:
         self.loss_function = nn.CrossEntropyLoss()
         self.num_epochs = num_epochs
         self.model = None
-        self.optimizer = None
+        self._optimizer = None
 
     def set_model(self, input_size: int, output_size: int, activation_function='relu'):
         if activation_function == 'relu':
@@ -104,10 +104,8 @@ class MLP:
 
         return loss_train, accuracy_train, loss_test, accuracy_test
 
-    def k_fold_cross_validation(self, X_train, t_train, optim='SGD'):
-        lr_choices = [1e-4, 1e-3, 1e-2, 1e-1]
-        reg_choices = [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
-        K = 5
+    def k_fold_cross_validation(self, X_train, t_train, lr_choices, reg_choices, K=5, optim='SGD'):
+
         kf = KFold(n_splits=K, shuffle=True)
 
         best_accu = -1
@@ -136,24 +134,25 @@ class MLP:
                     best_params = params
         return best_params, accuracy_historic
 
-def plot_training(loss_train, accuracy_train, loss_test, accuracy_test):
+def plot_training(loss_train, accuracy_train, loss_test, accuracy_test, label_test_val: str):
     """
     Plot the training plot for the data_train and data_test. The function is based on the plot_curves function
     used in the TP4 of IFT712.
+    The label_set_val allow us to change the label regarding if we provide data_test or data_validation
     """
     xdata = np.arange(1, len(loss_train) + 1)
     plt.figure()
     plt.subplot(2, 1, 1)
     plt.ylabel('Loss')
     plt.plot(xdata, loss_train, label='training')
-    plt.plot(xdata, loss_test, label='validation')
+    plt.plot(xdata, loss_test, label=label_test_val)
     plt.xticks(xdata)
     plt.legend()
 
     plt.subplot(2, 1, 2)
     plt.ylabel('Accuracy')
     plt.plot(xdata, accuracy_train, label='training')
-    plt.plot(xdata, accuracy_test, label='validation')
+    plt.plot(xdata, accuracy_test, label=label_test_val)
     plt.xticks(xdata)
     plt.legend()
     plt.show(block=False)
