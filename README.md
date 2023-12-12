@@ -69,7 +69,7 @@ pip install -r requirements.txt
 
 ### 2. Récupérer le jeu de données.
 
-Si ce n'est pas déjà fait, il faut télécharger le jeu de données "[classification de feuilles](https://www.kaggle.com/c/leaf-classification)".
+Si ce n'est pas déjà fait, il faut télécharger le jeu de données "[classification de feuilles](https://www.kaggle.com/c/leaf-classification/data)".
 
 Pour ce projet, il faut télécharger les éléments suivants :
 - images.zip
