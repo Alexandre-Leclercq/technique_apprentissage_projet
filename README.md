@@ -57,9 +57,12 @@ Installation du projet :
     Le projet nécessite l'utilisation de Python <b>3.8.X</b> ou plus.
     Nous laissons libre choix à la manière dont est créé l'environnement Python.
     Une fois qu'un environnement Python 3.8+ est créé.
-    Il faut se mettre à la racine du projet et entrer la commande :
+    Il faut se mettre à la racine du projet et entrer les commandes :
 </div>
 
+```
+pip install --upgrade pip
+```
 ```
 pip install -r requirements.txt
 ```

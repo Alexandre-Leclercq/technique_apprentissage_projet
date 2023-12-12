@@ -152,27 +152,3 @@ class CNN:
                     best_accu = val_accu
                     best_params = params
         return best_params, accuracy_historic
-
-
-def plot_training(loss_train, accuracy_train, loss_test, accuracy_test, label_test_val: str):
-    """
-    Plot the training plot for the data_train and data_test. The function is based on the plot_curves function
-    used in the TP4 of IFT712.
-    The label_set_val allow us to change the label regarding if we provide data_test or data_validation
-    """
-    xdata = np.arange(1, len(loss_train) + 1)
-    plt.figure()
-    plt.subplot(2, 1, 1)
-    plt.ylabel('Loss')
-    plt.plot(xdata, loss_train, label='training')
-    plt.plot(xdata, loss_test, label=label_test_val)
-    plt.xticks(xdata)
-    plt.legend()
-
-    plt.subplot(2, 1, 2)
-    plt.ylabel('Accuracy')
-    plt.plot(xdata, accuracy_train, label='training')
-    plt.plot(xdata, accuracy_test, label=label_test_val)
-    plt.xticks(xdata)
-    plt.legend()
-    plt.show(block=False)
