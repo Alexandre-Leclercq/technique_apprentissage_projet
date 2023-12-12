@@ -13,3 +13,7 @@ scipy
 pandas
 virtualenv
 tqdm
+torch
+torchvision
+seaborn
+pillow
